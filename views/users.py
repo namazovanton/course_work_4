@@ -2,7 +2,7 @@ from flask import request
 from flask_restx import Resource, Namespace
 
 from dao.model.user import UserSchema
-from decorators import admin_required
+from decorators import auth_required
 from implemented import user_service
 
 user_ns = Namespace('user')
@@ -10,12 +10,13 @@ user_ns = Namespace('user')
 
 @user_ns.route("/")
 class UsersView(Resource):
-    # @admin_required
+    @auth_required
     def get(self):
         users = user_service.get_all()
         response = UserSchema(many=True).dump(users)
         return response, 200
 
+    @auth_required
     def post(self):
         data = request.json
         user = user_service.create(data)
@@ -24,11 +25,13 @@ class UsersView(Resource):
 
 @user_ns.route("/<int:uid>")
 class UserView(Resource):
+    @auth_required
     def get(self, uid):
         user = user_service.get_one(uid)
         response = UserSchema().dump(user)
         return response, 200
 
+    @auth_required
     def patch(self, uid):
         req_json = request.json
         if "id" not in req_json:
@@ -36,7 +39,7 @@ class UserView(Resource):
         user_service.update(req_json)
         return f"User with id = {uid} updated", 204
 
-    # @admin_required
+    @auth_required
     def delete(self, uid):
         user_service.delete(uid)
         return "", 204
@@ -44,6 +47,7 @@ class UserView(Resource):
 
 @user_ns.route("/password")
 class UserPasswordView(Resource):
+    @auth_required
     def put(self):
         user_data = request.json
         email = user_data.get("email")

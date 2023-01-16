@@ -20,7 +20,7 @@ class DirectorsView(Resource):
         all_directors = director_service.get_all(filter)
         return directors_schema.dump(all_directors), 200
 
-    @admin_required
+    @auth_required
     def post(self):
         red_json = request.json
         director_service.create(red_json)
@@ -37,14 +37,14 @@ class DirectorView(Resource):
         except Exception as e:
             return str(e), 404
 
-    @admin_required
+    @auth_required
     def put(self, uid: int):
         red_json = request.json
         red_json["id"] = uid
         director_service.update(red_json)
         return "Director updated", 204
 
-    @admin_required
+    @auth_required
     def delete(self, uid: int):
         director_service.delete(uid)
         return "Director deleted", 204

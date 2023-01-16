@@ -19,6 +19,7 @@ def auth_required(func):
     return wrapper
 
 
+# На случай создание администратора в системе (пока в приложении нет ролей))
 def admin_required(func):
     def wrapper(*args, **kwargs):
         if 'Authorization' not in request.headers:
