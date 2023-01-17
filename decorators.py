@@ -14,7 +14,7 @@ def auth_required(func):
             jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except Exception as e:
             print("JWT Decode Exception", e)
-            abort(401)
+            abort(403)
         return func(*args, **kwargs)
     return wrapper
 
